@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form ve Tablo</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .btn {
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Kişi Bilgileri Formu</h2>
+<form id="infoForm">
+    <label for="ad">Ad:</label>
+    <input type="text" id="ad" required>
+    <br><br>
+    <label for="soyad">Soyad:</label>
+    <input type="text" id="soyad" required>
+    <br><br>
+    <label for="tel">Telefon:</label>
+    <input type="tel" id="tel" pattern="[0-9]*" required>
+    <br><br>
+    <label for="email">E-posta:</label>
+    <input type="email" id="email" required>
+    <br><br>
+    <button type="submit">Gönder</button>
+</form>
+
+<h2>Bilgiler Tablosu</h2>
+<table id="infoTable">
+    <thead>
+        <tr>
+            <th>Ad</th>
+            <th>Soyad</th>
+            <th>Telefon</th>
+            <th>E-posta</th>
+            <th>İşlem</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Bilgiler buraya eklenecek -->
+    </tbody>
+</table>
+
+<script>
+    let currentRow;
+
+    document.getElementById('infoForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Formun varsayılan davranışını engelle
+
+        // Formdan verileri al
+        const ad = document.getElementById('ad').value;
+        const soyad = document.getElementById('soyad').value;
+        const tel = document.getElementById('tel').value;
+        const email = document.getElementById('email').value;
+
+        // Eğer güncellenen bir satır varsa, güncelle
+        if (currentRow) {
+            currentRow.cells[0].textContent = ad;
+            currentRow.cells[1].textContent = soyad;
+            currentRow.cells[2].textContent = tel;
+            currentRow.cells[3].textContent = email;
+            currentRow = null; // Güncelleme tamamlandı
+        } else {
+            // Yeni satır oluştur
+            const tbody = document.getElementById('infoTable').querySelector('tbody');
+            const newRow = tbody.insertRow();
+
+            // Yeni hücreler ekle
+            newRow.insertCell(0).textContent = ad;
+            newRow.insertCell(1).textContent = soyad;
+            newRow.insertCell(2).textContent = tel;
+            newRow.insertCell(3).textContent = email;
+
+            // İşlem butonları
+            const actionCell = newRow.insertCell(4);
+            const updateButton = document.createElement('button');
+            updateButton.textContent = 'Güncelle';
+            updateButton.classList.add('btn');
+            updateButton.onclick = function() {
+                currentRow = newRow;
+                document.getElementById('ad').value = ad;
+                document.getElementById('soyad').value = soyad;
+                document.getElementById('tel').value = tel;
+                document.getElementById('email').value = email;
+            };
+
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Sil';
+            deleteButton.classList.add('btn');
+            deleteButton.onclick = function() {
+                tbody.deleteRow(newRow.rowIndex - 1);
+            };
+
+            actionCell.appendChild(updateButton);
+            actionCell.appendChild(deleteButton);
+        }
+
+        // Formu sıfırla
+        document.getElementById('infoForm').reset();
+    });
+</script>
+
+</body>
+</html>
